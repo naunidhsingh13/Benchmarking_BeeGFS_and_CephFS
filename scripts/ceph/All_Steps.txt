@@ -1,0 +1,136 @@
+Step 1 :
+
+On All
+
+configure /etc/hosts
+
+Added : 
+
+10.52.3.122 client1
+10.52.2.175 client2
+10.52.3.252 client3
+10.52.1.66 client4
+
+10.52.3.28 osd01
+10.52.2.199 osd02
+10.52.2.223 osd03
+10.52.0.168 osd04
+
+
+
+------------------------
+
+On All
+
+Check selinux is disabled.
+
+
+--------------------------
+
+
+set up user names 
+
+export USER_NAME="ceph-admin"
+export USER_PASS="StrOngP@ssw0rd"
+sudo useradd --create-home -s /bin/bash ${USER_NAME}
+echo "${USER_NAME}:${USER_PASS}"|sudo chpasswd
+echo "${USER_NAME} ALL = (root) NOPASSWD:ALL" | sudo tee /etc/sudoers.d/${USER_NAME}
+sudo chmod 0440 /etc/sudoers.d/${USER_NAME}
+
+
+export USER_NAME="ceph-user"
+export USER_PASS="StrOngP@ssw0rd"
+sudo useradd --create-home -s /bin/bash ${USER_NAME}
+echo "${USER_NAME}:${USER_PASS}"|sudo chpasswd
+echo "${USER_NAME} ALL = (root) NOPASSWD:ALL" | sudo tee /etc/sudoers.d/${USER_NAME}
+sudo chmod 0440 /etc/sudoers.d/${USER_NAME}
+
+
+export USER_NAME="ceph-mon01"
+export USER_PASS="StrOngP@ssw0rd"
+sudo useradd --create-home -s /bin/bash ${USER_NAME}
+echo "${USER_NAME}:${USER_PASS}"|sudo chpasswd
+echo "${USER_NAME} ALL = (root) NOPASSWD:ALL" | sudo tee /etc/sudoers.d/${USER_NAME}
+sudo chmod 0440 /etc/sudoers.d/${USER_NAME}
+
+TODO : Setup which server has what users
+
+----------------------------
+
+TOCHECK : May not be necessary
+
+CONFIRMED : Not Necessary
+
+Setup .ssh/config 
+
+Host osd01
+  Hostname an-sap-s-1
+  User ceph-admin
+Host osd01
+  Hostname an-sap-s-1
+  User ceph-user
+Host osd02
+  Hostname an-sap-s-2
+  User ceph-mon01
+Host osd02
+  Hostname an-sap-s-2
+  User ceph-user
+Host osd03
+  Hostname an-sap-s-3
+  User ceph-user
+Host osd04
+  Hostname an-sap-s-4
+  User ceph-user
+
+
+---------------------------
+
+Make ssh-keygen on each user
+
+update known_hosts on each node
+
+sudo ssh-keyscan osd02 osd03 osd04 client1 client2 client3 client4 >> known_hosts
+
+
+
+make authorized_keys file - sudo vim ~/.ssh/authorized_keys
+
+Open every other node and copy the id_rsa.pub on each node's ~/.ssh/authorized_keys
+
+run - sudo systemctl restart sshd
+
+
+Do this on the client servers as well
+
+-----------------------------
+
+
+TODO : add ports on firewall :
+
+admin : 80/tcp, 2003/tcp, 4505-4506/tcp
+
+sudo ufw allow 80/tcp
+sudo ufw allow 2003/tcp
+sudo ufw allow 4505:4506/tcp
+
+
+
+mon01 : 6789/tcp
+
+sudo ufw allow 6789/tcp
+
+
+osd01 : 6800-7300/tcp
+
+sudo ufw allow 6800:7300/tcp
+
+	- same for other osds
+
+
+-----------------------------
+
+
+
+
+
+

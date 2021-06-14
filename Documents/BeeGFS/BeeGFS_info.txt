@@ -1,0 +1,77 @@
+Links
+----------------------
+Beegfs documentation: https://doc.beegfs.io/latest/index.html
+Beegfs WIKI: https://www.beegfs.io/wiki/TableOfContents
+Beegfd benchmark link: https://doc.beegfs.io/latest/advanced_topics/benchmark.html
+beegfs dist link: https://www.beegfs.io/release/beegfs_7.2.1/dists/
+Beegfs FAQ: https://www.beegfs.io/wiki/FAQ#remove_node
+
+Download and add key
+----------------------
+sudo wget -O /etc/apt/sources.list.d/beegfs_deb9.list https://www.beegfs.io/release/beegfs_7.2.1/dists/beegfs-deb9.list
+wget -q https://www.beegfs.io/release/beegfs_7.2.1/gpg/DEB-GPG-KEY-beegfs -O- | sudo apt-key add -
+
+sudo apt update
+sudo apt upgrade -y
+sudo apt-get install linux-headers-`uname -r`
+
+Install Utilities
+----------------------
+sudo apt install beegfs-mgmtd -y
+sudo apt install beegfs-meta libbeegfs-ib -y
+sudo apt install beegfs-storage libbeegfs-ib -y
+sudo apt install beegfs-client beegfs-helperd beegfs-utils -y
+
+Setup services
+----------------------
+sudo /opt/beegfs/sbin/beegfs-setup-mgmtd -p /home/cc/beegfs/beegfs_mgmtd
+
+sudo /opt/beegfs/sbin/beegfs-setup-meta -p /home/cc/beegfs/beegfs_meta -s 2 -m 10.162.0.2
+
+sudo /opt/beegfs/sbin/beegfs-setup-storage -p /mnt/beegfs_ext4 -s 2 -i 302 -m 10.162.0.2
+
+sudo /opt/beegfs/sbin/beegfs-setup-client -m 10.52.3.28
+
+// rebuild client: sudo /etc/init.d/beegfs-client rebuild
+// Additional storage: sudo /opt/beegfs/sbin/beegfs-setup-storage -p /home/cc/cdata/data02/beegfs_storage -s 32 -i 302 -m 10.52.3.107
+
+Start Services
+----------------------
+sudo systemctl start beegfs-mgmtd
+sudo systemctl start beegfs-meta
+sudo systemctl start beegfs-storage
+sudo systemctl start beegfs-helperd
+sudo systemctl start beegfs-client
+
+Stop Services
+----------------------
+sudo systemctl stop beegfs-mgmtd
+sudo systemctl stop beegfs-meta
+sudo systemctl stop beegfs-storage
+sudo systemctl stop beegfs-helperd
+sudo systemctl stop beegfs-client
+
+sudo systemctl stop beegfs\*
+
+
+Check Connectivity
+----------------------
+ssh node04
+
+beegfs-ctl --listnodes --nodetype=meta --nicdetails
+beegfs-ctl --listnodes --nodetype=storage --nicdetails
+beegfs-ctl --listnodes --nodetype=client --nicdetails
+beegfs-net                # Displays connections the client is actually using
+beegfs-check-servers      # Displays possible connectivity of the services
+beegfs-df                 # Displays free space and inodes of storage and metadata targets
+
+config-folder
+-------------
+vim /etc/beegfs/beegfs-storage.conf
+
+sheck status
+------------
+less /var/log/beegfs-mgmtd.log
+less /var/log/beegfs-meta.log
+less /var/log/beegfs-storage.log
+less /var/log/beegfs-client.log

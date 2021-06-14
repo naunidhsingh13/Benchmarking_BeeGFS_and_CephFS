@@ -1,0 +1,26 @@
+Steps - 
+
+sudo vim /etc/cloud/cloud.cfg
+> change 'manage_etc_hosts' to false
+
+
+sudo vim /etc/hosts
+
+> add following to the file:
+--------------
+10.52.3.122 client1
+10.52.2.175 client2
+10.52.3.252 client3
+10.52.1.66 client4
+
+10.52.3.28 osd01
+10.52.2.199 osd02
+10.52.2.223 osd03
+10.52.0.168 osd04
+
+10.52.3.151 ceph-mgr
+-------------
+
+sudo apt update
+sudo apt -y upgrade
+sudo reboot

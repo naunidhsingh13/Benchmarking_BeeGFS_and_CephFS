@@ -1,0 +1,111 @@
+client:
+-------
+
+sudo systemctl stop beegfs\*
+
+sudo /opt/beegfs/sbin/beegfs-setup-client -m 10.140.83.150
+
+sudo systemctl start beegfs-helperd
+sudo systemctl start beegfs-client
+
+beegfs-df                 # Displays free space and inodes of storage and metadata targets
+beegfs-check-servers      # Displays possible connectivity of the services
+
+
+common
+------
+sudo rm -r beegfs/
+sudo vim /etc/beegfs/beegfs-meta.conf
+sudo vim /etc/beegfs/beegfs-storage.conf
+
+
+xfs
+---
+sudo systemctl stop beegfs\*
+
+sudo umount /dev/sda4
+sudo mkfs.xfs -b size=2048 -f -L XFS /dev/sda4
+sudo mkfs.xfs -f -L XFS /dev/sda4 #(can give bsize here)
+sudo mount /dev/sda4 /mnt/beegfs_xfs/
+
+# check block size
+sudo xfs_info /dev/sda4
+
+
+sudo /opt/beegfs/sbin/beegfs-setup-mgmtd -p /home/cc/beegfs/beegfs_mgmtd
+sudo /opt/beegfs/sbin/beegfs-setup-meta -p /home/cc/beegfs/beegfs_meta -s 1 -m 10.140.83.150
+sudo /opt/beegfs/sbin/beegfs-setup-storage -p /mnt/beegfs_xfs -s 1 -i 301 -m 10.140.83.150
+
+
+sudo /opt/beegfs/sbin/beegfs-setup-meta -p /home/cc/beegfs/beegfs_meta -s 2 -m 10.140.83.150
+sudo /opt/beegfs/sbin/beegfs-setup-storage -p /mnt/beegfs_xfs -s 2 -i 302 -m 10.140.83.150
+
+sudo systemctl start beegfs-mgmtd
+sudo systemctl start beegfs-meta
+sudo systemctl start beegfs-storage
+
+
+
+ext4
+----
+sudo systemctl stop beegfs\*
+
+sudo umount /dev/sda2
+sudo mkfs.ext4 /dev/sda2
+sudo mount /dev/sda2 /mnt/beegfs_ext4/
+
+#check block size
+sudo tune2fs -l /dev/sda2 | grep  "^Block size"
+
+
+sudo /opt/beegfs/sbin/beegfs-setup-mgmtd -p /home/cc/beegfs/beegfs_mgmtd
+sudo /opt/beegfs/sbin/beegfs-setup-meta -p /home/cc/beegfs/beegfs_meta -s 1 -m 10.140.83.150
+sudo /opt/beegfs/sbin/beegfs-setup-storage -p /mnt/beegfs_ext4 -s 1 -i 301 -m 10.140.83.150
+
+
+sudo /opt/beegfs/sbin/beegfs-setup-meta -p /home/cc/beegfs/beegfs_meta -s 2 -m 10.140.83.150
+sudo /opt/beegfs/sbin/beegfs-setup-storage -p /mnt/beegfs_ext4 -s 2 -i 302 -m 10.140.83.150
+
+sudo systemctl start beegfs-mgmtd
+sudo systemctl start beegfs-meta
+sudo systemctl start beegfs-storage
+
+
+btrfs
+=====
+sudo systemctl stop beegfs\*
+
+sudo umount /dev/sda3
+sudo mkfs.btrfs --sectorsize 16384 --nodesize 65536 /dev/sda3 -f
+sudo mount /dev/sda3 /mnt/beegfs_btrfs/
+
+#check block size
+sudo btrfs inspect-internal dump-super -f /dev/sda3 | grep "^sectorsize"
+
+
+
+
+f2fs
+----
+sudo systemctl stop beegfs\*
+
+sudo umount /dev/sda4
+sudo mkfs.f2fs -w 1024 /dev/sda4 -f
+sudo mount /dev/sda4 /mnt/beegfs_f2fs/
+
+# check block size
+
+
+
+sudo /opt/beegfs/sbin/beegfs-setup-mgmtd -p /home/cc/beegfs/beegfs_mgmtd
+sudo /opt/beegfs/sbin/beegfs-setup-meta -p /home/cc/beegfs/beegfs_meta -s 1 -m 10.140.83.150
+sudo /opt/beegfs/sbin/beegfs-setup-storage -p /mnt/beegfs_f2fs -s 1 -i 301 -m 10.140.83.150
+
+
+sudo /opt/beegfs/sbin/beegfs-setup-meta -p /home/cc/beegfs/beegfs_meta -s 2 -m 10.140.83.150
+sudo /opt/beegfs/sbin/beegfs-setup-storage -p /mnt/beegfs_f2fs -s 2 -i 302 -m 10.140.83.150
+
+sudo systemctl start beegfs-mgmtd
+sudo systemctl start beegfs-meta
+sudo systemctl start beegfs-storage
+

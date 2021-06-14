@@ -1,0 +1,41 @@
+IOR-3.3.0: MPI Coordinated Test of Parallel I/O
+Began               : Sat Apr 24 20:26:16 2021
+Command line        : ./ior -t 16mb -g -b 128m --posix.odirect -o /mnt/beegfs/testfile
+Machine             : Linux an-sap-c-1
+TestID              : 0
+StartTime           : Sat Apr 24 20:26:16 2021
+Path                : /mnt/beegfs
+FS                  : 45.6 GiB   Used FS: 0.1%   Inodes: 0.0 Mi   Used Inodes: -nan%
+
+Options: 
+api                 : POSIX
+apiVersion          : 
+test filename       : /mnt/beegfs/testfile
+access              : single-shared-file
+type                : independent
+segments            : 1
+ordering in a file  : sequential
+ordering inter file : no tasks offsets
+nodes               : 2
+tasks               : 48
+clients per node    : 24
+repetitions         : 1
+xfersize            : 16 MiB
+blocksize           : 128 MiB
+aggregate filesize  : 6 GiB
+
+Results: 
+
+access    bw(MiB/s)  IOPS       Latency(s)  block(KiB) xfer(KiB)  open(s)    wr/rd(s)   close(s)   total(s)   iter
+------    ---------  ----       ----------  ---------- ---------  --------   --------   --------   --------   ----
+write     164.35     10.28      0.148613    131072     16384      0.012673   37.37      0.001201   37.38      0   
+read      102.87     6.43       6.95        131072     16384      0.005859   59.71      0.011295   59.72      0   
+remove    -          -          -           -          -          -          -          -          0.000797   0   
+Max Write: 164.35 MiB/sec (172.33 MB/sec)
+Max Read:  102.87 MiB/sec (107.87 MB/sec)
+
+Summary of all tests:
+Operation   Max(MiB)   Min(MiB)  Mean(MiB)     StdDev   Max(OPs)   Min(OPs)  Mean(OPs)     StdDev    Mean(s) Stonewall(s) Stonewall(MiB) Test# #Tasks tPN reps fPP reord reordoff reordrand seed segcnt   blksiz    xsize aggs(MiB)   API RefNum
+write         164.35     164.35     164.35       0.00      10.27      10.27      10.27       0.00   37.38409         NA            NA     0     48  24    1   0     0        1         0    0      1 134217728 16777216    6144.0 POSIX      0
+read          102.87     102.87     102.87       0.00       6.43       6.43       6.43       0.00   59.72350         NA            NA     0     48  24    1   0     0        1         0    0      1 134217728 16777216    6144.0 POSIX      0
+Finished            : Sat Apr 24 20:27:53 2021

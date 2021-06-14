@@ -1,0 +1,8 @@
+sudo systemctl stop beegfs\*
+
+sudo apt remove beegfs-* --purge -y
+
+sudo rm -rf /home/cc/beegfs/*
+
+sudo rm -rf /mnt/beegfs_ext4/*
+

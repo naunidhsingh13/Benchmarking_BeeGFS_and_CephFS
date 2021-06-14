@@ -1,0 +1,30 @@
+$ su - ceph-admin/user
+# Enter Password : StrOngP@ssw0rd
+
+
+
+# Generate the SSH keys on ceph-admin node, but do not use sudo or the root user. Leave the passphrase empty
+
+$ ssh-keygen
+
+
+
+
+# Configure your ~/.ssh/config
+
+$ cat /home/ceph-admin/.ssh/config
+Host osd01
+  Hostname an-sap-s-1
+  User ceph-user
+Host osd02
+  Hostname an-sap-s-2
+  User ceph-user
+Host osd03
+  Hostname an-sap-s-3
+  User ceph-user
+Host osd04
+  Hostname an-sap-s-4
+  User ceph-user
+Host ceph-mgr
+  Hostname ceph-mgr
+  User ceph-admin
